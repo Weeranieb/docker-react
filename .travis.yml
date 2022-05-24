@@ -1,10 +1,23 @@
-language: generic
 sudo: required
-services: 
+language: generic
+
+services:
   - docker
 
-before_install: 
-  - docker build -t weeranieb/docker-react -f Dockerfile.dev .
+before_install:
+  - docker build -t stephengrider/docker-react -f Dockerfile.dev .
 
-script: 
-  - docker run -e CI=true weeranieb/docker-react npm run test -- --coverage
+script:
+  - docker run -e CI=true stephengrider/docker-react npm run test
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-1'
+  app: 'docker'
+  env: 'docker-env'
+  bucket_name: "elasticbeanstalk-us-east-1-749751552266"
+  bucket_path: 'docker'
+  on:
+    branch: main
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
